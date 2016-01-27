@@ -115,30 +115,25 @@ test("Check restarting after two pauses", function(assert){
     setTimeout(function(){
         watch.pause();
         var time = watch.getTime();
-        console.log("After 1000 seconds, time is:", time);
     }, 1000);
 
     setTimeout(function(){
         watch.start();
         var time = watch.getTime();
-        console.log("After 1100 seconds, time is:", time);
     }, 1100);
 
     setTimeout(function(){
         watch.pause();
         var time = watch.getTime();
-        console.log("After 1500 seconds, time is:", time);
     }, 1500);
 
     setTimeout(function(){
         watch.start();
         var time = watch.getTime();
-        console.log("After 1600 seconds, time is:", time);
     }, 1600);
 
     setTimeout(function(){
         var time = watch.getTime();
-        console.log("After 2000 seconds, time is:", time);
         assert.ok(Math.abs(time - 1800) < 20, "error less than 20ms after 2 pauses");
         done();
     }, 2000);
