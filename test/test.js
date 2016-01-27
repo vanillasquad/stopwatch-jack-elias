@@ -1,3 +1,5 @@
+RUN_LONG_TESTS = false;
+
 module("Interface Tests", {
     beforeEach: function() {
         this.watch = new Stopwatch();
@@ -64,19 +66,23 @@ test(".pause stops the timer running", function(assert) {
     }, 100);
 });
 
-// test("Check accuracy after 1 min",function(assert){
-//     var watch = this.watch;
-//     var done = assert.async();
-//     var interval = watch.start();
-//
-//     setTimeout(function(){
-//         assert.ok( Math.abs(watch.getTime() - 60000) < 10, "1 minute timer within 5ms");
-//
-//         setTimeout(function() {
-//             clearInterval(interval);
-//         }, 50);
-//     },60000);
-// });
+if (RUN_LONG_TESTS) {
+    test("Check accuracy after 1 min",function(assert){
+        var watch = this.watch;
+        var done = assert.async();
+        var interval = watch.start();
+
+        setTimeout(function(){
+            assert.ok( Math.abs(watch.getTime() - 60000) < 10, "1 minute timer within 5ms");
+
+            setTimeout(function() {
+                clearInterval(interval);
+            }, 50);
+
+            done();
+        }, 60000);
+    });
+}
 
 test("Check restarting after pause resumes correctly", function(assert) {
     var watch = this.watch;
@@ -172,9 +178,27 @@ test("Test getFormattedTime display", function(assert) {
         assert.equal(watch.getFormattedTime(), '0:00:01:000');
     }, 1000);
 
-    // setTimeout(function() {
-    //     assert.equal(watch.getFormattedTime(), '0:01:00:000');
-    // }, 60000);
+    if (RUN_LONG_TESTS) {
+        var done1 = assert.async();
+
+        setTimeout(function() {
+            var times = watch.getFormattedTime()
+            .match(/(\d+)/g).map(function(el) {
+                return parseInt(el, 10);
+            });
+
+            assert.equal(times[0], 0); // hours
+
+            if (times[1]) {
+                assert.equal(times[1], 1); // minutes
+                assert.ok(times[2] < 5); // seconds
+            } else {
+                assert.ok(Math.abs(times[2] - 60) < 5, "Passed"); // seconds
+                assert.ok(Math.abs(times[3] - 1000) < 5, "Passed"); // milliseconds
+            }
+            done1();
+        }, 60000);
+    }
 });
 
 module("DOM Testing", {
