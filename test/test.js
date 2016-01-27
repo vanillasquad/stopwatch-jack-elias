@@ -167,15 +167,39 @@ test("Test getFormattedTime display", function(assert) {
 
 test("Test getFormattedTime display", function(assert) {
     var watch = this.watch;
-    var done = assert.async();
+    var done = assert.async(2);
     var interval = watch.start();
 
     setTimeout(function() {
-        assert.equal(watch.getFormattedTime(), '0:00:00:050');
+        var times = watch.getFormattedTime()
+                        .match(/(\d+)/g)
+                        .map(function(el) {
+                            return parseInt(el, 10);
+                        });
+        assert.equal(times[0], 0); // hours
+        assert.equal(times[1], 0); // minutes
+        assert.equal(times[2], 0); // seconds
+        assert.ok(Math.abs(times[3] - 50) < 5, "Passed"); // milliseconds
+        done();
     }, 50);
 
     setTimeout(function() {
-        assert.equal(watch.getFormattedTime(), '0:00:01:000');
+        var times = watch.getFormattedTime()
+                        .match(/(\d+)/g)
+                        .map(function(el) {
+                            return parseInt(el, 10);
+                        });
+
+        assert.equal(times[0], 0); // hours
+        assert.equal(times[1], 0); // minutes
+
+        if (times[2]) {
+            assert.ok(Math.abs(times[2] - 1) < 5, "Passed"); // seconds
+            assert.equal(times[3], 0); // milliseconds
+        } else {
+            assert.ok(Math.abs(times[3] - 1000) < 10, "Passed"); // milliseconds
+        }
+        done();
     }, 1000);
 
     if (RUN_LONG_TESTS) {
