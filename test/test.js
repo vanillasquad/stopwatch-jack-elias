@@ -189,13 +189,14 @@ test("Test getFormattedTime display", function(assert) {
         assert.equal(times[1], 0); // minutes
 
         if (times[2]) {
-            assert.ok(Math.abs(times[2] - 1) < 5, "Passed"); // seconds
-            assert.equal(times[3], 0); // milliseconds
+            assert.equal(times[2], 1, "1 second"); // seconds
+            assert.ok(times[3] < 5, "and less than 5 millisecons"); // milliseconds
         } else {
-            assert.ok(Math.abs(times[3] - 1000) < 10, "Passed"); // milliseconds
+            assert.ok(1000 - times[3] < 10, "Passed"); // milliseconds
         }
         done();
     }, 1000);
+    
 
     if (RUN_LONG_TESTS) {
         var done1 = assert.async();
