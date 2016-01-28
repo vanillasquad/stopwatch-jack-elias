@@ -3,14 +3,25 @@
     <head>
         <meta charset="utf-8">
         <title>Jack &amp; Elias' Stopwatch</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:100,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div id="container">
-            <div id="display">0:00:00:00</div>
-            <div id="start-pause">Start</div>
-            <div id="reset">Reset</div>
+            <div id="top">
+                <div id="circle">
+                    <div id="hand"></div>
+                    <div id="decihand"></div>
+                </div>
+
+                <div id="display">0:00:00:00</div>
+            </div>
+            <div id="bottom">
+                <div id="start-pause">Start</div>
+                <div id="reset">Reset</div>
+            </div>
         </div>
-        <script src="../lib/stopwatch.js"></script>
-        <script src="../script.js"></script>
+        <script src="./lib/stopwatch.js"></script>
+        <script src="./script.js"></script>
     </body>
 </html>
