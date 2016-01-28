@@ -1,3 +1,5 @@
+RUN_LONG_TESTS = false;
+
 module("Interface Tests", {
     beforeEach: function() {
         this.watch = new Stopwatch();
@@ -64,19 +66,23 @@ test(".pause stops the timer running", function(assert) {
     }, 100);
 });
 
-// test("Check accuracy after 1 min",function(assert){
-//     var watch = this.watch;
-//     var done = assert.async();
-//     var interval = watch.start();
-//
-//     setTimeout(function(){
-//         assert.ok( Math.abs(watch.getTime() - 60000) < 10, "1 minute timer within 5ms");
-//
-//         setTimeout(function() {
-//             clearInterval(interval);
-//         }, 50);
-//     },60000);
-// });
+if (RUN_LONG_TESTS) {
+    test("Check accuracy after 1 min",function(assert){
+        var watch = this.watch;
+        var done = assert.async();
+        var interval = watch.start();
+
+        setTimeout(function(){
+            assert.ok( Math.abs(watch.getTime() - 60000) < 10, "1 minute timer within 5ms");
+
+            setTimeout(function() {
+                clearInterval(interval);
+            }, 50);
+
+            done();
+        }, 60000);
+    });
+}
 
 test("Check restarting after pause resumes correctly", function(assert) {
     var watch = this.watch;
@@ -109,30 +115,25 @@ test("Check restarting after two pauses", function(assert){
     setTimeout(function(){
         watch.pause();
         var time = watch.getTime();
-        console.log("After 1000 seconds, time is:", time);
     }, 1000);
 
     setTimeout(function(){
         watch.start();
         var time = watch.getTime();
-        console.log("After 1100 seconds, time is:", time);
     }, 1100);
 
     setTimeout(function(){
         watch.pause();
         var time = watch.getTime();
-        console.log("After 1500 seconds, time is:", time);
     }, 1500);
 
     setTimeout(function(){
         watch.start();
         var time = watch.getTime();
-        console.log("After 1600 seconds, time is:", time);
     }, 1600);
 
     setTimeout(function(){
         var time = watch.getTime();
-        console.log("After 2000 seconds, time is:", time);
         assert.ok(Math.abs(time - 1800) < 20, "error less than 20ms after 2 pauses");
         done();
     }, 2000);
@@ -161,20 +162,63 @@ test("Test getFormattedTime display", function(assert) {
 
 test("Test getFormattedTime display", function(assert) {
     var watch = this.watch;
-    var done = assert.async();
+    var done = assert.async(2);
     var interval = watch.start();
 
     setTimeout(function() {
-        assert.equal(watch.getFormattedTime(), '0:00:00:050');
+        var times = watch.getFormattedTime()
+                        .match(/(\d+)/g)
+                        .map(function(el) {
+                            return parseInt(el, 10);
+                        });
+        assert.equal(times[0], 0); // hours
+        assert.equal(times[1], 0); // minutes
+        assert.equal(times[2], 0); // seconds
+        assert.ok(Math.abs(times[3] - 50) < 5, "Passed"); // milliseconds
+        done();
     }, 50);
 
     setTimeout(function() {
-        assert.equal(watch.getFormattedTime(), '0:00:01:000');
-    }, 1000);
+        var times = watch.getFormattedTime()
+                        .match(/(\d+)/g)
+                        .map(function(el) {
+                            return parseInt(el, 10);
+                        });
 
-    // setTimeout(function() {
-    //     assert.equal(watch.getFormattedTime(), '0:01:00:000');
-    // }, 60000);
+        assert.equal(times[0], 0); // hours
+        assert.equal(times[1], 0); // minutes
+
+        if (times[2]) {
+            assert.equal(times[2], 1, "1 second"); // seconds
+            assert.ok(times[3] < 5, "and less than 5 millisecons"); // milliseconds
+        } else {
+            assert.ok(1000 - times[3] < 10, "Passed"); // milliseconds
+        }
+        done();
+    }, 1000);
+    
+
+    if (RUN_LONG_TESTS) {
+        var done1 = assert.async();
+
+        setTimeout(function() {
+            var times = watch.getFormattedTime()
+            .match(/(\d+)/g).map(function(el) {
+                return parseInt(el, 10);
+            });
+
+            assert.equal(times[0], 0); // hours
+
+            if (times[1]) {
+                assert.equal(times[1], 1); // minutes
+                assert.ok(times[2] < 5); // seconds
+            } else {
+                assert.ok(Math.abs(times[2] - 60) < 5, "Passed"); // seconds
+                assert.ok(Math.abs(times[3] - 1000) < 5, "Passed"); // milliseconds
+            }
+            done1();
+        }, 60000);
+    }
 });
 
 module("DOM Testing", {
