@@ -42,5 +42,8 @@ document.getElementById('start-pause').addEventListener('click', function(e){
 document.getElementById('reset').addEventListener('click', function(e){
     if(watchScript.isPaused()){
         watchScript.reset();
+    } else {
+        watchScript.pause();
+        watchScript.reset();
     }
 });
