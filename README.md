@@ -15,7 +15,7 @@ This is a toy project to create a minimal stopwatch in order to learn TDD and as
 ## How to Run
 You can run the stopwatch in three ways:
 1. Clone the repo, and open index.html in your favourite browser.
-2. Visit the [repo website](https://github.com/vanillasquad/stopwatch-jack-elias) hosted by github-pages.
+2. Visit the [repo website](http://vanillasquad.github.io/stopwatch-jack-elias/) hosted by github-pages.
 3. Download it as an extension from the [chrome extension store](https://chrome.google.com/webstore/detail/stopwatch/dcaienkchlfpbcjkalkhbbcaohecmodp?hl=en-US&gl=GB&authuser=1)
 
 ## Screenshot
